@@ -1,5 +1,5 @@
-import { fetchImages } from './js/pixabay-api';
-import { renderGallery } from './js/render-functions';
+import { fetchImages } from './js/pixabay-api.js';
+import { renderGallery } from './js/render-functions.js';
 
 function showLoader() {
     document.getElementById('loader').classList.remove('hidden');
