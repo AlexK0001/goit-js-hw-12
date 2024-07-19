@@ -1,5 +1,3 @@
-import { fetchImages } from './js/pixabay-api.js';
-import { renderGallery } from './js/render-functions.js';
 import axios from 'axios';
 
 const form = document.getElementById('search-form');
@@ -26,7 +24,7 @@ loadMoreBtn.addEventListener('click', async () => {
   await fetchImages();
 });
 
-async function fetchImages() {
+const fetchImages = async () => {
   try {
     const response = await axios.get(apiUrl, {
       params: {
@@ -50,13 +48,13 @@ async function fetchImages() {
   } catch (error) {
     console.error('Error fetching data:', error);
   }
-}
+};
 
-function renderGallery(images) {
+const renderGallery = (images) => {
   const markup = images.map(image => `
     <div class="gallery-item">
       <img src="${image.webformatURL}" alt="${image.tags}" />
     </div>
   `).join('');
   gallery.insertAdjacentHTML('beforeend', markup);
-}
+};
