@@ -1,4 +1,7 @@
 import axios from 'axios';
+import iziToast from 'izitoast';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const form = document.getElementById('search-form');
 const gallery = document.getElementById('gallery');
@@ -36,25 +39,38 @@ const fetchImages = async () => {
     });
     const data = response.data;
 
-    if (data.hits.length > 0) {
-      renderGallery(data.hits);
-      loadMoreBtn.hidden = false;
+    if (data.hits.length === 0) {
+      iziToast.info({ title: 'Info', message: 'No images found for your search query.' });
+      return;
     }
 
+    renderGallery(data.hits);
+    new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
+    loadMoreBtn.hidden = gallery.childElementCount >= data.totalHits;
+
     if (gallery.childElementCount >= data.totalHits) {
-      loadMoreBtn.hidden = true;
-      alert("We're sorry, but you've reached the end of search results.");
+      iziToast.info({ title: 'Info', message: "We're sorry, but you've reached the end of search results." });
+    } else {
+      smoothScroll();
     }
   } catch (error) {
-    console.error('Error fetching data:', error);
+    iziToast.error({ title: 'Error', message: 'Error fetching data from API.' });
   }
 };
 
 const renderGallery = (images) => {
   const markup = images.map(image => `
-    <div class="gallery-item">
+    <a href="${image.largeImageURL}" class="gallery-item">
       <img src="${image.webformatURL}" alt="${image.tags}" />
-    </div>
+    </a>
   `).join('');
   gallery.insertAdjacentHTML('beforeend', markup);
+};
+
+const smoothScroll = () => {
+  const { height: cardHeight } = gallery.firstElementChild.getBoundingClientRect();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 };
