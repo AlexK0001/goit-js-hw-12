@@ -1,8 +1,8 @@
-import axios from 'axios';
+import 'izitoast/dist/css/iziToast.min.css';
 import iziToast from 'izitoast';
+import axios from 'axios';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.getElementById('search-form');
 const gallery = document.getElementById('gallery');
@@ -13,6 +13,7 @@ let page = 1;
 const perPage = 15;
 const apiKey = '44813412-f6fc02e89419494116d973502';
 const apiUrl = 'https://pixabay.com/api/';
+const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -46,7 +47,7 @@ const fetchImages = async () => {
     }
 
     renderGallery(data.hits);
-    new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
+    lightbox.refresh(); 
     loadMoreBtn.hidden = gallery.childElementCount >= data.totalHits;
 
     if (gallery.childElementCount >= data.totalHits) {
